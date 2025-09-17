@@ -10,10 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.orion.prototype.dto.LoginRequest;
+import com.orion.prototype.dto.RegisterRequest;
 import com.orion.prototype.dto.UserDto;
 import com.orion.prototype.entity.User;
 import com.orion.prototype.repository.UserRepository;
 import com.orion.prototype.service.AuthService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -28,12 +31,12 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public UserDto register(@RequestBody User user) {
-        return authService.register(user);
+    public UserDto register(@Valid @RequestBody RegisterRequest request) {
+        return authService.register(request);
     }
 
     @PostMapping("/login")
-    public Map<String, String> login(@RequestBody LoginRequest request) {
+    public Map<String, String> login(@Valid @RequestBody LoginRequest request) {
         String token = authService.login(request);
         return Map.of("token", token);
     }

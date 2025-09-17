@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.orion.prototype.dto.LoginRequest;
+import com.orion.prototype.dto.RegisterRequest;
 import com.orion.prototype.dto.UserDto;
 import com.orion.prototype.entity.User;
 import com.orion.prototype.repository.UserRepository;
@@ -27,11 +28,17 @@ public class AuthService {
         this.jwtService = jwtService;
     }
 
-    public UserDto register(User user) {
-        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+    public UserDto register(RegisterRequest request) {
+        if (userRepository.findByEmail(request.email()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Cet utilisateur existe déjà");
         }
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        User user = User.builder()
+                .username(request.username())
+                .email(request.email())
+                .password(passwordEncoder.encode(request.password()))
+                .build();
+
         User saved = userRepository.save(user);
         return toDto(saved);
     }
