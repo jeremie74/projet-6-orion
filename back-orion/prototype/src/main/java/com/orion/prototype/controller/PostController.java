@@ -24,19 +24,16 @@ public class PostController {
         this.postService = postService;
     }
 
-    // GET /api/posts -> liste des articles
     @GetMapping
     public List<PostDto> getAllPosts() {
         return postService.getAllPosts();
     }
 
-    // GET /api/posts/{id} -> consulter un article
     @GetMapping("/{id}")
     public PostDto getPostById(@PathVariable Long id) {
         return postService.getPostById(id);
     }
 
-    // POST /api/posts -> créer un article
     @PostMapping
     public PostDto createPost(@RequestBody Map<String, String> payload,
             Authentication authentication) {
