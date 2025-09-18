@@ -1,1 +1,13 @@
-/* You can add global styles to this file, and also import other style files */
+@import "tailwindcss"; /* You can add global styles to this file, and also import other style files */
+
+@theme {
+  --font-sans: "Inter", sans-serif;
+}
+
+button {
+  @apply cursor-pointer w-[180px] h-[40px] bg-white border border-black rounded-lg font-semibold text-[16px] leading-none;
+}
+
+a {
+  @apply cursor-pointer underline;
+}
