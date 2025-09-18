@@ -13,9 +13,10 @@ import {
 } from './interfaces/login.interface';
 import { LoginService } from './login.service';
 import { LoginState } from './interfaces/login-state.type';
-
-const AUTH_TOKEN_KEY = 'authToken';
-const AUTH_USER_KEY = 'authUser';
+import {
+  AUTH_TOKEN_KEY,
+  AUTH_USER_KEY,
+} from '../../core/auth/auth-storage.constants';
 
 @Component({
   selector: 'app-login',
