@@ -5,7 +5,7 @@
 }
 
 button {
-  @apply cursor-pointer w-[180px] h-[40px] bg-white border border-black rounded-lg font-semibold text-[16px] leading-none;
+  @apply cursor-pointer h-[40px] leading-none;
 }
 
 a {
