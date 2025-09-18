@@ -1,10 +1,13 @@
 package com.orion.prototype.dto;
 
-import jakarta.validation.constraints.Email;
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 
 public record LoginRequest(
-        @Email(message = "Email invalide") @NotBlank(message = "L'email est obligatoire") String email,
+        @JsonProperty("identifier")
+        @JsonAlias({ "email", "username" })
+        @NotBlank(message = "L'identifiant est obligatoire") String identifier,
 
         @NotBlank(message = "Le mot de passe est obligatoire") String password) {
 }

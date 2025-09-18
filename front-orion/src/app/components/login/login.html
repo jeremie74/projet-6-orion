@@ -19,6 +19,39 @@
     (ngSubmit)="submit()"
     novalidate
   >
+    <div
+      *ngIf="errorMessages() as errors"
+      class="rounded-md border border-red-200 bg-red-50 p-4"
+      role="alert"
+      aria-live="assertive"
+    >
+      <div class="flex">
+        <div class="flex-shrink-0">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 20 20"
+            fill="currentColor"
+            class="h-5 w-5 text-red-400"
+            aria-hidden="true"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 001.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+              clip-rule="evenodd"
+            />
+          </svg>
+        </div>
+        <div class="ml-3">
+          <h3 class="text-sm font-medium text-red-800">Connexion impossible</h3>
+          <div class="mt-2 text-sm text-red-700">
+            <ul class="list-disc space-y-1 pl-5">
+              <li *ngFor="let error of errors">{{ error }}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div>
       <label for="identifier" class="block text-sm mb-1"
         >E-mail ou nom d'utilisateur <span class="text-red-500">*</span></label
@@ -26,9 +59,19 @@
       <input
         id="identifier"
         type="text"
-        formControlName="name"
+        formControlName="identifier"
         autocomplete="username"
-        class="w-full h-9 border border-gray-400 rounded-lg px-2.5 focus:outline-none focus:border-[#7763C5] focus:ring-2 focus:ring-[#7763C5]/40 transition-colors"
+        class="w-full h-9 border rounded-lg px-2.5 focus:outline-none focus:ring-2 transition-colors"
+        [ngClass]="
+          identifierInvalid
+            ? ['border-red-500', 'focus:border-red-500', 'focus:ring-red-300']
+            : [
+                'border-gray-400',
+                'focus:border-[#7763C5]',
+                'focus:ring-[#7763C5]/40'
+              ]
+        "
+        [attr.aria-invalid]="identifierInvalid"
       />
     </div>
 
@@ -109,7 +152,8 @@
     <!-- Submit form -->
     <button
       type="submit"
-      class="w-full mt-4 h-10 bg-[#7763C5] text-white font-bold rounded-lg hover:bg-[#7763C5] transition-colors px-6 self-center"
+      class="mt-4 h-10 bg-[#7763C5] text-white font-bold rounded-lg hover:bg-[#7763C5] transition-colors px-6 self-center disabled:cursor-not-allowed disabled:opacity-60"
+      [disabled]="isSubmitting()"
     >
       Se connecter
     </button>

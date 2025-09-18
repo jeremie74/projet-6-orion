@@ -1,5 +1,7 @@
 package com.orion.prototype.service;
 
+import java.util.Optional;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.orion.prototype.dto.LoginRequest;
+import com.orion.prototype.dto.LoginResponse;
 import com.orion.prototype.dto.RegisterRequest;
 import com.orion.prototype.dto.UserDto;
 import com.orion.prototype.entity.User;
@@ -43,17 +46,26 @@ public class AuthService {
         return toDto(saved);
     }
 
-    public String login(LoginRequest request) {
-        User user = userRepository.findByEmail(request.email())
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.UNAUTHORIZED, "Email ou mot de passe invalide"));
+    public LoginResponse login(LoginRequest request) {
+        String identifier = request.identifier();
+
+        Optional<User> userOptional = userRepository.findByEmail(identifier);
+
+        if (userOptional.isEmpty()) {
+            userOptional = userRepository.findByUsername(identifier);
+        }
+
+        User user = userOptional.orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.UNAUTHORIZED, "Identifiant incorrect"));
 
         if (!passwordEncoder.matches(request.password(), user.getPassword())) {
             throw new ResponseStatusException(
-                    HttpStatus.UNAUTHORIZED, "Email ou mot de passe invalide");
+                    HttpStatus.UNAUTHORIZED, "Identifiant incorrect");
         }
 
-        return jwtService.generateToken(user.getEmail());
+        String token = jwtService.generateToken(user.getEmail());
+
+        return new LoginResponse(token, user.getUsername());
     }
 
     // Get current user info (as DTO)
