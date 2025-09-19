@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -15,7 +16,7 @@ import { RegistrationState } from './interfaces/register-state.type';
 
 @Component({
   selector: 'app-register',
-  imports: [CommonModule, ReactiveFormsModule, Header],
+  imports: [CommonModule, ReactiveFormsModule, Header, RouterModule],
   templateUrl: './register.html',
   styleUrl: './register.css',
 })

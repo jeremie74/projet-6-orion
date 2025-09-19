@@ -1,42 +1,11 @@
 import { Component, OnDestroy, OnInit, computed, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-
-import { AUTH_TOKEN_KEY, AUTH_USER_KEY } from '../../core/auth/auth-storage.constants';
-
-type SessionState = {
-  isAuthenticated: boolean;
-  username: string | null;
-};
-
-const readSession = (): SessionState => {
-  if (typeof window === 'undefined' || !window.localStorage) {
-    return { isAuthenticated: false, username: null };
-  }
-
-  const token = window.localStorage.getItem(AUTH_TOKEN_KEY);
-  const userRaw = window.localStorage.getItem(AUTH_USER_KEY);
-
-  if (!token || !userRaw) {
-    return { isAuthenticated: false, username: null };
-  }
-
-  try {
-    const user = JSON.parse(userRaw);
-    if (
-      typeof user === 'object' &&
-      user !== null &&
-      typeof user.username === 'string' &&
-      user.username.trim().length > 0
-    ) {
-      return { isAuthenticated: true, username: user.username };
-    }
-  } catch {
-    return { isAuthenticated: false, username: null };
-  }
-
-  return { isAuthenticated: false, username: null };
-};
+import { readSession, SessionState } from '../../core/auth/session-state';
+import {
+  AUTH_TOKEN_KEY,
+  AUTH_USER_KEY,
+} from '../../core/auth/auth-storage.constants';
 
 @Component({
   selector: 'app-header',
@@ -60,9 +29,11 @@ export class Header implements OnInit, OnDestroy {
         <path d="M6.343 20.485A7.963 7.963 0 0 1 12 18a7.963 7.963 0 0 1 5.657 2.485" fill="#4b5563" />
       </svg>
     `);
+  protected readonly menuOpen = signal(false);
 
   private readonly handleStorageChange = () => {
     this.session.set(readSession());
+    this.menuOpen.set(false);
   };
 
   constructor(private readonly router: Router) {}
@@ -80,14 +51,17 @@ export class Header implements OnInit, OnDestroy {
   }
 
   goToLogin() {
+    this.closeMenu();
     this.router.navigate(['/login']);
   }
 
   goToRegister() {
+    this.closeMenu();
     this.router.navigate(['/register']);
   }
 
   goToArticles() {
+    this.closeMenu();
     this.router.navigate(['/posts']);
   }
 
@@ -98,6 +72,15 @@ export class Header implements OnInit, OnDestroy {
     }
 
     this.session.set(readSession());
+    this.closeMenu();
     this.router.navigate(['/']);
+  }
+
+  protected toggleMenu(): void {
+    this.menuOpen.update((open) => !open);
+  }
+
+  private closeMenu(): void {
+    this.menuOpen.set(false);
   }
 }

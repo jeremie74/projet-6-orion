@@ -10,30 +10,98 @@
     </a>
   </div>
 
-  <!-- Menu de navigation -->
-  <nav class="ml-auto flex items-center space-x-6 text-sm">
+  <!-- Menu de navigation desktop -->
+  <nav class="ml-auto hidden md:flex items-center space-x-6 text-sm">
     @if (!isAuthenticated()) {
-      <a class="hover:underline" (click)="goToLogin()">Se connecter</a>
-      <a class="hover:underline" (click)="goToRegister()">S'inscrire</a>
+    <a class="hover:underline" (click)="goToLogin()">Se connecter</a>
+    <a class="hover:underline" (click)="goToRegister()">S'inscrire</a>
     } @else {
-      <a class="hover:underline" (click)="goToArticles()">Articles</a>
-      <button
-        type="button"
-        class="hover:underline"
-        (click)="logout()"
-      >
-        Se déconnecter
-      </button>
-      <a
-        class="flex items-center justify-center w-10 h-10 rounded-full bg-slate-200"
-        aria-label="Espace compte utilisateur"
-      >
-        <img
-          [src]="avatarSrc"
-          alt="Avatar utilisateur"
-          class="w-8 h-8"
-        />
-      </a>
+    <a class="hover:underline" (click)="goToArticles()">Articles</a>
+    <button type="button" class="hover:underline" (click)="logout()">
+      Se déconnecter
+    </button>
+    <a
+      class="flex items-center justify-center w-10 h-10 rounded-full bg-slate-200"
+      aria-label="Espace compte utilisateur"
+    >
+      <img [src]="avatarSrc" alt="Avatar utilisateur" class="w-8 h-8" />
+    </a>
     }
   </nav>
+
+  <!-- Bouton menu mobile -->
+  <button
+    type="button"
+    class="ml-auto md:hidden inline-flex items-center justify-center rounded-md border border-black px-3 py-2"
+    [attr.aria-label]="menuOpen() ? 'Fermer le menu' : 'Ouvrir le menu'"
+    aria-controls="mobile-nav"
+    [attr.aria-expanded]="menuOpen()"
+    (click)="toggleMenu()"
+  >
+    @if (menuOpen()) {
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.5"
+      class="w-5 h-5"
+    >
+      <path d="M6 6l12 12" />
+      <path d="M6 18L18 6" />
+    </svg>
+    } @else {
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.5"
+      class="w-5 h-5"
+    >
+      <path d="M4 6h16" />
+      <path d="M4 12h16" />
+      <path d="M4 18h16" />
+    </svg>
+    }
+  </button>
 </header>
+
+@if (menuOpen()) {
+<div id="mobile-nav" class="md:hidden border-b border-black bg-white px-6 py-4">
+  <nav class="flex flex-col space-y-3 text-sm">
+    @if (!isAuthenticated()) {
+    <button
+      type="button"
+      class="text-left hover:underline"
+      (click)="goToLogin()"
+    >
+      Se connecter
+    </button>
+    <button
+      type="button"
+      class="text-left hover:underline"
+      (click)="goToRegister()"
+    >
+      S'inscrire
+    </button>
+    } @else {
+    <button
+      type="button"
+      class="text-left hover:underline"
+      (click)="goToArticles()"
+    >
+      Articles
+    </button>
+    <button type="button" class="text-left hover:underline" (click)="logout()">
+      Se déconnecter
+    </button>
+    <div class="flex items-center space-x-3 pt-2">
+      <button type="button" class="text-left hover:underline">
+        Mon compte
+      </button>
+    </div>
+    }
+  </nav>
+</div>
+}

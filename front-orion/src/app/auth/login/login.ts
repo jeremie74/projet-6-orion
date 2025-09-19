@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -20,7 +21,7 @@ import {
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, ReactiveFormsModule, Header],
+  imports: [CommonModule, ReactiveFormsModule, Header, RouterModule],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
