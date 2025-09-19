@@ -61,7 +61,17 @@
         type="text"
         formControlName="name"
         autocomplete="name"
-        class="w-full h-9 border border-gray-400 rounded-lg px-2.5 focus:outline-none focus:border-[#7763C5] focus:ring-2 focus:ring-[#7763C5]/40 transition-colors"
+        class="w-full h-9 border border-gray-400 rounded-lg px-2.5 focus:outline-none focus:ring-2 transition-colors"
+        [ngClass]="
+          nameInvalid
+            ? ['border-red-500', 'focus:border-red-500', 'focus:ring-red-300']
+            : [
+                'border-gray-400',
+                'focus:border-[#7763C5]',
+                'focus:ring-[#7763C5]/40'
+              ]
+        "
+        [attr.aria-invalid]="nameInvalid"
       />
     </div>
 

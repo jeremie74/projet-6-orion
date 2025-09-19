@@ -24,7 +24,7 @@ import {
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
-export class Login {
+export class LoginComponent {
   private readonly formBuilder = inject(FormBuilder);
   private readonly loginService = inject(LoginService);
   private readonly router = inject(Router);
@@ -80,7 +80,7 @@ export class Login {
         if (state.status === 'success') {
           this.persistSession(state.data);
           this.errorMessages.set(null);
-          this.router.navigate(['/']);
+          this.router.navigate(['/posts']);
         } else if (state.status === 'error') {
           this.errorMessages.set(state.errors);
           this.clearSession();

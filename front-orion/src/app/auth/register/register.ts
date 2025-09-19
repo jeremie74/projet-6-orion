@@ -19,7 +19,7 @@ import { RegistrationState } from './interfaces/register-state.type';
   templateUrl: './register.html',
   styleUrl: './register.css',
 })
-export class Register {
+export class RegisterComponent {
   private readonly formBuilder = inject(FormBuilder);
   private readonly registerService = inject(RegisterService);
   private readonly router = inject(Router);
@@ -78,6 +78,11 @@ export class Register {
       },
       { allowSignalWrites: true }
     );
+  }
+
+  get nameInvalid(): boolean {
+    const nameControl = this.registerForm.controls.name;
+    return nameControl.invalid && (nameControl.dirty || nameControl.touched);
   }
 
   get passwordInvalid(): boolean {
