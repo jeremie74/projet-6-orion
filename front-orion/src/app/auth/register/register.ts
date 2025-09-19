@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
-import { Header } from '../header/header';
+import { Header } from './../../shared/header/header';
 import {
   RegisterErrorResponse,
   RegisterRequest,
