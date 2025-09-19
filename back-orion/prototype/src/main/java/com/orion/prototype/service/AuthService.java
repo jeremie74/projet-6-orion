@@ -65,7 +65,7 @@ public class AuthService {
 
         String token = jwtService.generateToken(user.getEmail());
 
-        return new LoginResponse(token, user.getUsername());
+        return new LoginResponse(token, user.getUsername(), user.getId());
     }
 
     // Get current user info (as DTO)

@@ -60,6 +60,14 @@ public class PostService {
                                 .toList();
         }
 
+        // Get posts belonging to a specific author
+        public List<PostDto> getPostsByAuthorId(Long authorId) {
+                return postRepository.findAllByAuthorIdOrderByCreatedAtDesc(authorId)
+                                .stream()
+                                .map(this::toDto)
+                                .toList();
+        }
+
         // Get a post by id
         public PostDto getPostById(Long id) {
                 Post post = postRepository.findById(id)

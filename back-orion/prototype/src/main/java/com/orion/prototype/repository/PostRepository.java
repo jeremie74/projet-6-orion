@@ -8,4 +8,6 @@ import com.orion.prototype.entity.Post;
 
 public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findAllByOrderByCreatedAtDesc();
+
+    List<Post> findAllByAuthorIdOrderByCreatedAtDesc(Long authorId);
 }

@@ -5,6 +5,7 @@ export interface LoginRequest {
 
 export interface LoginSuccessResponse {
   token: string;
+  userId: number;
   username: string;
 }
 

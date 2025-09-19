@@ -137,13 +137,17 @@ export class LoginComponent {
     return ['Identifiants incorrects.'];
   }
 
-  private persistSession({ token, username }: LoginSuccessResponse): void {
+  private persistSession({
+    token,
+    userId,
+    username,
+  }: LoginSuccessResponse): void {
     if (typeof window === 'undefined') {
       return;
     }
 
     localStorage.setItem(AUTH_TOKEN_KEY, token);
-    localStorage.setItem(AUTH_USER_KEY, JSON.stringify({ username }));
+    localStorage.setItem(AUTH_USER_KEY, JSON.stringify({ userId, username }));
   }
 
   private clearSession(): void {
