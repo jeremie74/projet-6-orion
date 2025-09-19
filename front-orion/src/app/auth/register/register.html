@@ -18,8 +18,8 @@
     (ngSubmit)="submit()"
     novalidate
   >
+    @if (errorMessages(); as errors) {
     <div
-      *ngIf="errorMessages() as errors"
       class="rounded-md border border-red-200 bg-red-50 p-4"
       role="alert"
       aria-live="assertive"
@@ -52,6 +52,7 @@
         </div>
       </div>
     </div>
+    }
     <div>
       <label for="name" class="block text-sm mb-1"
         >Nom d'utilisateur <span class="text-red-500">*</span></label

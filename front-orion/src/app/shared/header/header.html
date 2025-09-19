@@ -12,30 +12,28 @@
 
   <!-- Menu de navigation -->
   <nav class="ml-auto flex items-center space-x-6 text-sm">
-    <ng-container *ngIf="!isAuthenticated(); else authenticatedNav">
+    @if (!isAuthenticated()) {
       <a class="hover:underline" (click)="goToLogin()">Se connecter</a>
       <a class="hover:underline" (click)="goToRegister()">S'inscrire</a>
-    </ng-container>
+    } @else {
+      <a class="hover:underline" (click)="goToArticles()">Articles</a>
+      <button
+        type="button"
+        class="hover:underline"
+        (click)="logout()"
+      >
+        Se déconnecter
+      </button>
+      <a
+        class="flex items-center justify-center w-10 h-10 rounded-full bg-slate-200"
+        aria-label="Espace compte utilisateur"
+      >
+        <img
+          [src]="avatarSrc"
+          alt="Avatar utilisateur"
+          class="w-8 h-8"
+        />
+      </a>
+    }
   </nav>
-
-  <ng-template #authenticatedNav>
-    <a class="hover:underline" (click)="goToArticles()">Articles</a>
-    <button
-      type="button"
-      class="hover:underline"
-      (click)="logout()"
-    >
-      Se déconnecter
-    </button>
-    <a
-      class="flex items-center justify-center w-10 h-10 rounded-full bg-slate-200"
-      aria-label="Espace compte utilisateur"
-    >
-      <img
-        [src]="avatarSrc"
-        alt="Avatar utilisateur"
-        class="w-8 h-8"
-      />
-    </a>
-  </ng-template>
 </header>
