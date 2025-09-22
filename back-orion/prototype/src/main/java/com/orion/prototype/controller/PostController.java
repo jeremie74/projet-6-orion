@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.orion.prototype.dto.PostDto;
@@ -30,8 +31,11 @@ public class PostController {
     }
 
     @GetMapping("/user/{userId}")
-    public List<PostDto> getPostsByUserId(@PathVariable Long userId) {
-        return postService.getPostsByAuthorId(userId);
+    public List<PostDto> getPostsByUserId(
+            @PathVariable Long userId,
+            @RequestParam(name = "sort", defaultValue = "createdAt") String sort,
+            @RequestParam(name = "order", defaultValue = "desc") String order) {
+        return postService.getPostsByAuthorId(userId, sort, order);
     }
 
     @GetMapping("/{id}")

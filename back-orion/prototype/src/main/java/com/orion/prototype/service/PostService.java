@@ -2,8 +2,10 @@ package com.orion.prototype.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -22,6 +24,11 @@ public class PostService {
         private final PostRepository postRepository;
         private final TopicRepository topicRepository;
         private final UserRepository userRepository;
+
+        private static final Map<String, String> SORT_FIELDS = Map.of(
+                        "createdAt", "createdAt",
+                        "title", "title",
+                        "author", "author.username");
 
         public PostService(PostRepository postRepository,
                         TopicRepository topicRepository,
@@ -61,8 +68,10 @@ public class PostService {
         }
 
         // Get posts belonging to a specific author
-        public List<PostDto> getPostsByAuthorId(Long authorId) {
-                return postRepository.findAllByAuthorIdOrderByCreatedAtDesc(authorId)
+        public List<PostDto> getPostsByAuthorId(Long authorId, String sortField, String order) {
+                Sort sort = buildSort(sortField, order);
+
+                return postRepository.findAllByAuthorId(authorId, sort)
                                 .stream()
                                 .map(this::toDto)
                                 .toList();
@@ -77,6 +86,29 @@ public class PostService {
         }
 
         // Conversion Post -> PostDto
+        private Sort buildSort(String sortField, String order) {
+                String property = SORT_FIELDS.get(sortField);
+                if (property == null) {
+                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                                        "Critère de tri invalide: " + sortField);
+                }
+
+                Sort.Direction direction;
+                try {
+                        direction = Sort.Direction.fromString(order);
+                } catch (IllegalArgumentException ex) {
+                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                                        "Ordre de tri invalide: " + order);
+                }
+
+                Sort.Order sortOrder = new Sort.Order(direction, property);
+                if ("title".equals(property) || "author.username".equals(property)) {
+                        sortOrder = sortOrder.ignoreCase();
+                }
+
+                return Sort.by(sortOrder);
+        }
+
         private PostDto toDto(Post post) {
                 return new PostDto(
                                 post.getId(),
