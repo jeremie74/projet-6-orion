@@ -5,50 +5,14 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { of } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { Header } from '../../../../shared/header/header';
-import {
-  PostQueryOptions,
-  PostService,
-} from '../../services/post.service';
-import { Post } from '../../interfaces/post.interface';
 import { AUTH_USER_KEY } from '../../../../core/auth/auth-storage.constants';
-
-type PostsState = {
-  status: 'idle' | 'loading' | 'success' | 'error';
-  data: Post[];
-  error?: string;
-};
-
-type SortValue = 'date_desc' | 'date_asc' | 'title_desc';
-
-type SortOption = {
-  value: SortValue;
-  label: string;
-  query: PostQueryOptions;
-};
-
-const SORT_OPTIONS: SortOption[] = [
-  {
-    value: 'date_desc',
-    label: 'Date décroissante',
-    query: { sort: 'createdAt', order: 'desc' },
-  },
-  {
-    value: 'date_asc',
-    label: 'Date croissante',
-    query: { sort: 'createdAt', order: 'asc' },
-  },
-  {
-    value: 'title_desc',
-    label: 'Titre',
-    query: { sort: 'title' },
-  },
-];
-
-const SORT_OPTION_MAP: Record<SortValue, SortOption> = {
-  date_desc: SORT_OPTIONS[0],
-  date_asc: SORT_OPTIONS[1],
-  title_desc: SORT_OPTIONS[2],
-};
+import { PostService } from '../../services/post.service';
+import {
+  PostsState,
+  SortValue,
+  SORT_OPTIONS,
+  SORT_OPTION_MAP,
+} from '../../interfaces/post.interface';
 
 @Component({
   selector: 'app-list.component',
@@ -91,10 +55,7 @@ export class ListComponent {
         return this.postService
           .getPostsByAuthorId(params.authorId, params.query)
           .pipe(
-            map(
-              (posts) =>
-                ({ status: 'success', data: posts } as PostsState)
-            ),
+            map((posts) => ({ status: 'success', data: posts } as PostsState)),
             catchError((error: unknown) =>
               of<PostsState>({
                 status: 'error',
@@ -110,19 +71,11 @@ export class ListComponent {
   );
 
   readonly posts = computed(() => this.postsState().data);
-  readonly isLoading = computed(
-    () => this.postsState().status === 'loading'
-  );
-  readonly hasError = computed(
-    () => this.postsState().status === 'error'
-  );
-  readonly errorMessage = computed(
-    () => this.postsState().error ?? null
-  );
+  readonly isLoading = computed(() => this.postsState().status === 'loading');
+  readonly hasError = computed(() => this.postsState().status === 'error');
+  readonly errorMessage = computed(() => this.postsState().error ?? null);
   readonly showEmptyState = computed(
-    () =>
-      this.postsState().status === 'success' &&
-      this.posts().length === 0
+    () => this.postsState().status === 'success' && this.posts().length === 0
   );
 
   onSortChange(event: Event): void {
@@ -144,11 +97,7 @@ export class ListComponent {
 
     try {
       const parsed = JSON.parse(userRaw) as unknown;
-      if (
-        parsed &&
-        typeof parsed === 'object' &&
-        'userId' in parsed
-      ) {
+      if (parsed && typeof parsed === 'object' && 'userId' in parsed) {
         const userIdValue = (parsed as { userId?: unknown }).userId;
         if (typeof userIdValue === 'number') {
           return userIdValue;
@@ -198,5 +147,7 @@ export class ListComponent {
 }
 
 function isSortValue(value: unknown): value is SortValue {
-  return value === 'date_desc' || value === 'date_asc' || value === 'title_desc';
+  return (
+    value === 'date_desc' || value === 'date_asc' || value === 'title_desc'
+  );
 }

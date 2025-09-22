@@ -7,15 +7,7 @@ import {
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment.development';
-import { Post } from '../interfaces/post.interface';
-
-export type PostSort = 'createdAt' | 'title';
-export type SortOrder = 'asc' | 'desc';
-
-export interface PostQueryOptions {
-  sort?: PostSort;
-  order?: SortOrder;
-}
+import { Post, PostQueryOptions } from '../interfaces/post.interface';
 
 @Injectable({ providedIn: 'root' })
 export class PostService {
