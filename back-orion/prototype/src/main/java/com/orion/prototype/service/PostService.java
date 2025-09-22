@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.orion.prototype.dto.CommentDto;
@@ -62,6 +63,52 @@ public class PostService {
 
                 Post saved = postRepository.save(post);
                 return toDto(saved);
+        }
+
+        @Transactional
+        public PostDto updatePost(Long postId, String title, String content, Long topicId, String authorEmail) {
+                Post post = postRepository.findById(postId)
+                                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                                "Article introuvable"));
+
+                User currentUser = userRepository.findByEmail(authorEmail)
+                                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED,
+                                                "Utilisateur introuvable"));
+
+                if (!post.getAuthor().getId().equals(currentUser.getId())) {
+                        throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                                        "Vous ne pouvez pas modifier cet article");
+                }
+
+                Topic topic = topicRepository.findById(topicId)
+                                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                                "Topic introuvable"));
+
+                post.setTitle(title);
+                post.setContent(content);
+                post.setTopic(topic);
+
+                postRepository.save(post);
+
+                return toDto(post);
+        }
+
+        @Transactional
+        public void deletePost(Long postId, String authorEmail) {
+                Post post = postRepository.findById(postId)
+                                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                                                "Article introuvable"));
+
+                User currentUser = userRepository.findByEmail(authorEmail)
+                                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED,
+                                                "Utilisateur introuvable"));
+
+                if (!post.getAuthor().getId().equals(currentUser.getId())) {
+                        throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                                        "Vous ne pouvez pas supprimer cet article");
+                }
+
+                postRepository.delete(post);
         }
 
         // Get all posts (as DTOs)
