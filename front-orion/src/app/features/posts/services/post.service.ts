@@ -7,7 +7,8 @@ import {
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment.development';
-import { Post, PostQueryOptions } from '../interfaces/post.interface';
+import { Post, PostPayload } from '../interfaces/post.interface';
+import { PostQueryOptions } from '../interfaces/post-sort.constants';
 
 @Injectable({ providedIn: 'root' })
 export class PostService {
@@ -29,14 +30,28 @@ export class PostService {
       );
   }
 
-  // TODO: implement once create flow is ready.
-  createPost(post: unknown): Observable<Post> {
-    throw new Error('createPost not implemented yet.');
+  getPostById(postId: number | string): Observable<Post> {
+    return this.http
+      .get<Post>(`${this.endpoint}/${postId}`)
+      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
   }
 
-  // TODO: implement once update flow is ready.
-  updatePost(post: unknown): Observable<Post> {
-    throw new Error('updatePost not implemented yet.');
+  createPost(payload: PostPayload): Observable<Post> {
+    return this.http
+      .post<Post>(this.endpoint, payload)
+      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+  }
+
+  updatePost(postId: number | string, payload: PostPayload): Observable<Post> {
+    return this.http
+      .put<Post>(`${this.endpoint}/${postId}`, payload)
+      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+  }
+
+  deletePost(postId: number | string): Observable<void> {
+    return this.http
+      .delete<void>(`${this.endpoint}/${postId}`)
+      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
   }
 
   private buildQueryParams(options: PostQueryOptions = {}): HttpParams {
@@ -51,5 +66,9 @@ export class PostService {
     }
 
     return params;
+  }
+
+  private handleError(error: HttpErrorResponse) {
+    return throwError(() => error.error ?? error);
   }
 }

@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { PostsComponent } from './posts';
 import { ListComponent } from './list/list.component/list.component';
-import { CreateComponent } from './create/create.component/create.component';
+import { PostFormComponent } from './post-form/post-form.component';
 
 export const postsRoutes: Routes = [
   {
@@ -9,7 +9,8 @@ export const postsRoutes: Routes = [
     component: PostsComponent,
     children: [
       { path: 'list', component: ListComponent },
-      { path: 'create', component: CreateComponent },
+      { path: 'create', component: PostFormComponent },
+      { path: 'edit/:id', component: PostFormComponent },
       { path: '', redirectTo: 'list', pathMatch: 'full' },
     ],
   },

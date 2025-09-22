@@ -1,0 +1,182 @@
+<app-header></app-header>
+
+<main class="px-6 py-10">
+  <div class="mx-auto flex w-full max-w-3xl flex-col gap-8">
+    <section class="flex flex-col gap-2 text-left">
+      <h1 class="text-2xl font-semibold text-gray-900">
+        {{ isEditMode() ? "Modifier l'article" : "Créer un nouvel article" }}
+      </h1>
+      <p class="text-sm text-gray-500">
+        {{
+          isEditMode()
+            ? "Mettez à jour le titre, le contenu ou le sujet de votre article."
+            : "Renseignez les informations ci-dessous pour publier un nouvel article."
+        }}
+      </p>
+    </section>
+
+    @if (isEditMode() && isLoadingPost()) {
+    <div
+      class="space-y-4 rounded-xl border border-gray-200 bg-white p-6 shadow-sm"
+    >
+      <div class="h-6 w-52 animate-pulse rounded bg-gray-200"></div>
+      <div class="space-y-3">
+        <div class="h-4 w-full animate-pulse rounded bg-gray-200"></div>
+        <div class="h-4 w-11/12 animate-pulse rounded bg-gray-200"></div>
+        <div class="h-4 w-5/6 animate-pulse rounded bg-gray-200"></div>
+      </div>
+      <div class="h-10 w-40 animate-pulse rounded bg-gray-200"></div>
+    </div>
+    } @else if (isEditMode() && loadError()) {
+    <div
+      class="space-y-4 rounded-xl border border-red-200 bg-red-50 p-6 text-sm text-red-700"
+    >
+      <p>{{ loadError() }}</p>
+      <div class="flex gap-3">
+        <button
+          type="button"
+          class="inline-flex items-center justify-center rounded-lg bg-[#7763C5] px-4 py-2 text-sm font-medium text-white transition hover:bg-[#5c4ca3]"
+          (click)="cancel()"
+        >
+          Retour à la liste
+        </button>
+      </div>
+    </div>
+    } @else {
+    <form
+      [formGroup]="postForm"
+      novalidate
+      class="space-y-6 rounded-xl border border-gray-200 bg-white p-8 shadow-sm"
+      (ngSubmit)="submit()"
+    >
+      <div class="flex flex-col gap-2">
+        <label for="topicId" class="text-sm font-medium text-gray-700"
+          >Thème</label
+        >
+        <div class="relative">
+          <select
+            id="topicId"
+            formControlName="topicId"
+            class="w-full appearance-none rounded-lg border border-gray-300 bg-white px-4 py-2 pr-10 text-sm text-gray-900 transition focus:border-[#7763C5] focus:outline-none focus:ring-2 focus:ring-[#7763C5]/40"
+            [class.border-red-400]="
+              topicIdControl.invalid &&
+              (topicIdControl.dirty || topicIdControl.touched)
+            "
+            [disabled]="isSubmitting() || disableForm || isLoadingTopics()"
+          >
+            <option value="">
+              {{
+                isLoadingTopics()
+                  ? "Chargement des thèmes..."
+                  : "Sélectionner un thème"
+              }}
+            </option>
+            @if (!isLoadingTopics() && topics().length === 0) {
+            <option value="" disabled>Aucun thème disponible</option>
+            } @else { @for (topic of topics(); track topic.id) {
+            <option [value]="topic.id">{{ topic.name }}</option>
+            } }
+          </select>
+          <svg
+            class="pointer-events-none absolute right-3 top-1/2 h-3 w-3 -translate-y-1/2 transform text-gray-400"
+            viewBox="0 0 12 8"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M1 1.5L6 6.5L11 1.5"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        </div>
+        @if ( topicIdControl.invalid && (topicIdControl.dirty ||
+        topicIdControl.touched) ) {
+        <p class="text-xs text-red-600">Le thème est requis.</p>
+        } @if (!isLoadingTopics() && topics().length === 0 && !topicsError()) {
+        <p class="text-xs text-gray-500">
+          Aucun thème disponible pour le moment.
+        </p>
+        } @if (topicsError()) {
+        <p class="text-xs text-red-600">
+          Impossible de charger les thèmes. Veuillez réessayer plus tard.
+        </p>
+        }
+      </div>
+      <div class="flex flex-col gap-2">
+        <input
+          id="title"
+          type="text"
+          formControlName="title"
+          class="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 transition focus:border-[#7763C5] focus:outline-none focus:ring-2 focus:ring-[#7763C5]/40"
+          placeholder="Titre de l'article"
+          [class.border-red-400]="
+            titleControl.invalid && (titleControl.dirty || titleControl.touched)
+          "
+        />
+        @if ( titleControl.invalid && (titleControl.dirty ||
+        titleControl.touched) ) {
+        <p class="text-xs text-red-600">
+          Le titre est requis (150 caractères max).
+        </p>
+        }
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <textarea
+          id="content"
+          formControlName="content"
+          rows="8"
+          class="rounded-lg border border-gray-300 px-4 py-3 text-sm text-gray-900 transition focus:border-[#7763C5] focus:outline-none focus:ring-2 focus:ring-[#7763C5]/40"
+          placeholder="Contenu de l'article"
+          [class.border-red-400]="
+            contentControl.invalid &&
+            (contentControl.dirty || contentControl.touched)
+          "
+        ></textarea>
+        @if ( contentControl.invalid && (contentControl.dirty ||
+        contentControl.touched) ) {
+        <p class="text-xs text-red-600">
+          Le contenu est requis (10 caractères minimum).
+        </p>
+        }
+      </div>
+
+      @if (submissionErrorMessage) {
+      <div
+        class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+      >
+        {{ submissionErrorMessage }}
+      </div>
+      }
+
+      <div class="flex flex-wrap items-center gap-3">
+        <button
+          type="submit"
+          class="inline-flex h-11 items-center justify-center rounded-lg bg-[#7763C5] px-6 text-sm font-semibold text-white transition-colors hover:bg-[#5c4ca3] disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer"
+          [disabled]="isSubmitting() || disableForm"
+        >
+          {{ isEditMode() ? "Enregistrer les modifications" : "Publier" }}
+        </button>
+        <button
+          type="button"
+          class="inline-flex h-11 items-center justify-center rounded-lg border border-gray-300 px-6 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-100"
+          (click)="cancel()"
+        >
+          Annuler
+        </button>
+        <button
+          type="button"
+          class="ml-auto inline-flex h-11 items-center justify-center rounded-lg border border-gray-200 px-4 text-sm text-gray-500 transition-colors hover:bg-gray-50"
+          (click)="resetForm()"
+          [disabled]="disableForm"
+        >
+          Réinitialiser
+        </button>
+      </div>
+    </form>
+    }
+  </div>
+</main>
