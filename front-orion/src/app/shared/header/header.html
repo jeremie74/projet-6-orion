@@ -2,7 +2,7 @@
   <div class="mx-auto flex w-full max-w-5xl items-center">
     <!-- Logo -->
     <div class="flex items-center">
-      <a routerLink="/">
+      <a [routerLink]="isAuthenticated() ? '/posts/list' : '/'">
         <img
           src="/assets/logo.png"
           alt="MDD Logo"

@@ -34,7 +34,7 @@ public class PostController {
     public List<PostDto> getPostsByUserId(
             @PathVariable Long userId,
             @RequestParam(name = "sort", defaultValue = "createdAt") String sort,
-            @RequestParam(name = "order", defaultValue = "desc") String order) {
+            @RequestParam(name = "order", required = false) String order) {
         return postService.getPostsByAuthorId(userId, sort, order);
     }
 

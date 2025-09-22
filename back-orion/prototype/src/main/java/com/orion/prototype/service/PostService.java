@@ -4,8 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -29,6 +29,11 @@ public class PostService {
                         "createdAt", "createdAt",
                         "title", "title",
                         "author", "author.username");
+
+        private static final Map<String, Sort.Direction> DEFAULT_SORT_DIRECTIONS = Map.of(
+                        "createdAt", Sort.Direction.DESC,
+                        "title", Sort.Direction.ASC,
+                        "author", Sort.Direction.ASC);
 
         public PostService(PostRepository postRepository,
                         TopicRepository topicRepository,
@@ -93,12 +98,18 @@ public class PostService {
                                         "Critère de tri invalide: " + sortField);
                 }
 
+                String sanitizedOrder = order == null ? null : order.trim();
+
                 Sort.Direction direction;
-                try {
-                        direction = Sort.Direction.fromString(order);
-                } catch (IllegalArgumentException ex) {
-                        throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
-                                        "Ordre de tri invalide: " + order);
+                if (sanitizedOrder == null || sanitizedOrder.isEmpty()) {
+                        direction = DEFAULT_SORT_DIRECTIONS.getOrDefault(sortField, Sort.Direction.ASC);
+                } else {
+                        try {
+                                direction = Sort.Direction.fromString(sanitizedOrder);
+                        } catch (IllegalArgumentException ex) {
+                                throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                                                "Ordre de tri invalide: " + order);
+                        }
                 }
 
                 Sort.Order sortOrder = new Sort.Order(direction, property);

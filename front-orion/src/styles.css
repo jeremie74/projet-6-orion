@@ -9,5 +9,5 @@ button {
 }
 
 a {
-  @apply cursor-pointer underline;
+  @apply cursor-pointer;
 }
