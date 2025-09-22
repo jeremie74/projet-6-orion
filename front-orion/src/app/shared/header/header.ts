@@ -2,10 +2,7 @@ import { Component, OnDestroy, OnInit, computed, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { readSession, SessionState } from '../../core/auth/session-state';
-import {
-  AUTH_TOKEN_KEY,
-  AUTH_USER_KEY,
-} from '../../core/auth/auth-storage.constants';
+import { clearSession } from '../../core/auth/token-storage';
 
 @Component({
   selector: 'app-header',
@@ -66,11 +63,7 @@ export class Header implements OnInit, OnDestroy {
   }
 
   logout() {
-    if (typeof window !== 'undefined') {
-      window.localStorage.removeItem(AUTH_TOKEN_KEY);
-      window.localStorage.removeItem(AUTH_USER_KEY);
-    }
-
+    clearSession();
     this.session.set(readSession());
     this.closeMenu();
     this.router.navigate(['/']);

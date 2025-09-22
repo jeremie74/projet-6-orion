@@ -15,9 +15,9 @@ import {
 import { LoginService } from './login.service';
 import { LoginState } from './interfaces/login-state.type';
 import {
-  AUTH_TOKEN_KEY,
-  AUTH_USER_KEY,
-} from '../../core/auth/auth-storage.constants';
+  clearSession,
+  persistSession,
+} from '../../core/auth/token-storage';
 
 @Component({
   selector: 'app-login',
@@ -79,12 +79,12 @@ export class LoginComponent {
         const state = this.loginStateSignal();
 
         if (state.status === 'success') {
-          this.persistSession(state.data);
+          this.storeSession(state.data);
           this.errorMessages.set(null);
           this.router.navigate(['/posts']);
         } else if (state.status === 'error') {
           this.errorMessages.set(state.errors);
-          this.clearSession();
+          clearSession();
         } else if (state.status === 'loading') {
           this.errorMessages.set(null);
         }
@@ -137,25 +137,17 @@ export class LoginComponent {
     return ['Identifiants incorrects.'];
   }
 
-  private persistSession({
-    token,
+  private storeSession({
+    accessToken,
+    refreshToken,
     userId,
     username,
   }: LoginSuccessResponse): void {
-    if (typeof window === 'undefined') {
-      return;
-    }
-
-    localStorage.setItem(AUTH_TOKEN_KEY, token);
-    localStorage.setItem(AUTH_USER_KEY, JSON.stringify({ userId, username }));
-  }
-
-  private clearSession(): void {
-    if (typeof window === 'undefined') {
-      return;
-    }
-
-    localStorage.removeItem(AUTH_TOKEN_KEY);
-    localStorage.removeItem(AUTH_USER_KEY);
+    persistSession({
+      accessToken,
+      refreshToken,
+      userId,
+      username,
+    });
   }
 }

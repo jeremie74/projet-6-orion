@@ -12,7 +12,7 @@ import {
   take,
 } from 'rxjs/operators';
 import { Header } from '../../../../shared/header/header';
-import { AUTH_USER_KEY } from '../../../../core/auth/auth-storage.constants';
+import { getStoredUser } from '../../../../core/auth/token-storage';
 import { PostListState } from '../../interfaces/post.interface';
 import {
   SORT_OPTIONS,
@@ -150,34 +150,14 @@ export class ListComponent {
   }
 
   private readAuthorId(): number | null {
-    if (typeof window === 'undefined') {
+    const storedUser = getStoredUser();
+    if (!storedUser) {
       return null;
     }
 
-    const userRaw = window.localStorage.getItem(AUTH_USER_KEY);
-    if (!userRaw) {
-      return null;
-    }
-
-    try {
-      const parsed = JSON.parse(userRaw) as unknown;
-      if (parsed && typeof parsed === 'object' && 'userId' in parsed) {
-        const userIdValue = (parsed as { userId?: unknown }).userId;
-        if (typeof userIdValue === 'number') {
-          return userIdValue;
-        }
-        if (typeof userIdValue === 'string') {
-          const numericId = Number.parseInt(userIdValue, 10);
-          if (!Number.isNaN(numericId)) {
-            return numericId;
-          }
-        }
-      }
-    } catch {
-      return null;
-    }
-
-    return null;
+    return typeof storedUser.userId === 'number'
+      ? storedUser.userId
+      : null;
   }
 
   private resolveError(error: unknown): string {
