@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.orion.prototype.dto.LoginRequest;
 import com.orion.prototype.dto.LoginResponse;
+import com.orion.prototype.dto.RefreshTokenRequest;
 import com.orion.prototype.dto.RegisterRequest;
 import com.orion.prototype.dto.UserDto;
 import com.orion.prototype.entity.User;
@@ -37,6 +38,11 @@ public class AuthController {
     @PostMapping("/login")
     public LoginResponse login(@Valid @RequestBody LoginRequest request) {
         return authService.login(request);
+    }
+
+    @PostMapping("/refresh")
+    public LoginResponse refresh(@Valid @RequestBody RefreshTokenRequest request) {
+        return authService.refresh(request.refreshToken());
     }
 
     @GetMapping("/me")

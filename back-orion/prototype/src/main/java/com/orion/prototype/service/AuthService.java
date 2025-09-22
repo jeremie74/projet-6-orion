@@ -22,13 +22,16 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final RefreshTokenService refreshTokenService;
 
     public AuthService(UserRepository userRepository,
             PasswordEncoder passwordEncoder,
-            JwtService jwtService) {
+            JwtService jwtService,
+            RefreshTokenService refreshTokenService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
+        this.refreshTokenService = refreshTokenService;
     }
 
     public UserDto register(RegisterRequest request) {
@@ -63,9 +66,20 @@ public class AuthService {
                     HttpStatus.UNAUTHORIZED, "Identifiant incorrect");
         }
 
-        String token = jwtService.generateToken(user.getEmail());
+        String accessToken = jwtService.generateToken(user.getEmail());
+        var refreshToken = refreshTokenService.createForUser(user);
 
-        return new LoginResponse(token, user.getUsername(), user.getId());
+        return new LoginResponse(accessToken, refreshToken.getToken(), user.getUsername(), user.getId());
+    }
+
+    public LoginResponse refresh(String refreshTokenValue) {
+        var refreshToken = refreshTokenService.validate(refreshTokenValue);
+        var user = refreshToken.getUser();
+
+        String accessToken = jwtService.generateToken(user.getEmail());
+        var newRefreshToken = refreshTokenService.createForUser(user);
+
+        return new LoginResponse(accessToken, newRefreshToken.getToken(), user.getUsername(), user.getId());
     }
 
     // Get current user info (as DTO)
