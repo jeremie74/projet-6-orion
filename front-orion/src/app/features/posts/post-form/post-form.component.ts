@@ -291,10 +291,6 @@ export class PostFormComponent {
     });
   }
 
-  resetForm(): void {
-    this.postForm.reset(INITIAL_FORM_VALUE);
-  }
-
   cancel(): void {
     this.router.navigate(['/posts/list']);
   }
@@ -328,10 +324,7 @@ export class PostFormComponent {
     return "Une erreur inattendue s'est produite.";
   }
 
-  private matchTopicByName(
-    topics: Topic[],
-    name: string | null
-  ): Topic | null {
+  private matchTopicByName(topics: Topic[], name: string | null): Topic | null {
     if (!name) {
       return null;
     }
