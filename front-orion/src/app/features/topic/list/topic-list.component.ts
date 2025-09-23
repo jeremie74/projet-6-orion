@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { RouterModule } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
 import { catchError, map, startWith } from 'rxjs/operators';
 import { Header } from '../../../shared/header/header';
@@ -13,7 +14,7 @@ import {
 
 @Component({
   selector: 'app-topic-list',
-  imports: [CommonModule, Header],
+  imports: [CommonModule, Header, RouterModule],
   templateUrl: './topic-list.component.html',
   styleUrl: './topic-list.component.css',
 })

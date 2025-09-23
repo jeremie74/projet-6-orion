@@ -8,6 +8,7 @@ public record PostDto(
         String title,
         String content,
         LocalDateTime createdAt,
+        Long topicId,
         String topicName,
         String authorUsername,
         List<CommentDto> comments) {

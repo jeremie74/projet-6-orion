@@ -129,6 +129,16 @@ public class PostService {
                                 .toList();
         }
 
+        // Get posts belonging to a specific topic
+        public List<PostDto> getPostsByTopicId(Long topicId, String sortField, String order) {
+                Sort sort = buildSort(sortField, order);
+
+                return postRepository.findAllByTopicId(topicId, sort)
+                                .stream()
+                                .map(this::toDto)
+                                .toList();
+        }
+
         // Get a post by id
         public PostDto getPostById(Long id) {
                 Post post = postRepository.findById(id)
@@ -173,6 +183,7 @@ public class PostService {
                                 post.getTitle(),
                                 post.getContent(),
                                 post.getCreatedAt(),
+                                post.getTopic().getId(),
                                 post.getTopic().getName(),
                                 post.getAuthor().getUsername(),
                                 post.getComments().stream()

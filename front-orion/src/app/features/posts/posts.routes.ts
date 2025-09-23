@@ -3,6 +3,7 @@ import { PostsComponent } from './posts';
 import { ListComponent } from './list/list.component/list.component';
 import { PostFormComponent } from './post-form/post-form.component';
 import { TopicListComponent } from '../topic/list/topic-list.component';
+import { TopicPostsComponent } from '../topic/topic-posts/topic-posts.component';
 
 export const postsRoutes: Routes = [
   {
@@ -13,6 +14,7 @@ export const postsRoutes: Routes = [
       { path: 'create', component: PostFormComponent },
       { path: 'edit/:id', component: PostFormComponent },
       { path: 'topics', component: TopicListComponent },
+      { path: 'topics/:id', component: TopicPostsComponent },
       { path: '', redirectTo: 'list', pathMatch: 'full' },
     ],
   },

@@ -52,8 +52,9 @@ const refreshTokenInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(req).pipe(
     catchError((error: HttpErrorResponse) => {
+      const shouldHandle = error && [401, 403].includes(error.status);
       if (
-        error.status !== 401 ||
+        !shouldHandle ||
         !isBrowser() ||
         req.headers.has('X-Retry') ||
         req.url.includes('/auth/login') ||

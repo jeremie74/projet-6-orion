@@ -82,6 +82,13 @@ public class AuthService {
         return new LoginResponse(accessToken, newRefreshToken.getToken(), user.getUsername(), user.getId());
     }
 
+    public void logout(org.springframework.security.core.Authentication authentication) {
+        String email = (String) authentication.getPrincipal();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilisateur introuvable"));
+        refreshTokenService.deleteForUser(user);
+    }
+
     // Get current user info (as DTO)
     public UserDto getCurrentUser(Authentication authentication) {
         String email = (String) authentication.getPrincipal();

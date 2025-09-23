@@ -36,6 +36,12 @@ export class PostService {
       .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
   }
 
+  getPostsByTopicId(topicId: number | string): Observable<Post[]> {
+    return this.http
+      .get<Post[]>(`${this.endpoint}/topic/${topicId}`)
+      .pipe(catchError((error: HttpErrorResponse) => this.handleError(error)));
+  }
+
   createPost(payload: PostPayload): Observable<Post> {
     return this.http
       .post<Post>(this.endpoint, payload)

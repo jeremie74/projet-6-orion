@@ -42,6 +42,14 @@ public class PostController {
         return postService.getPostsByAuthorId(userId, sort, order);
     }
 
+    @GetMapping("/topic/{topicId}")
+    public List<PostDto> getPostsByTopicId(
+            @PathVariable Long topicId,
+            @RequestParam(name = "sort", defaultValue = "createdAt") String sort,
+            @RequestParam(name = "order", required = false) String order) {
+        return postService.getPostsByTopicId(topicId, sort, order);
+    }
+
     @GetMapping("/{id}")
     public PostDto getPostById(@PathVariable Long id) {
         return postService.getPostById(id);
