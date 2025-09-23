@@ -10,6 +10,7 @@ export interface Post {
   title: string;
   content: string;
   createdAt: string;
+  topicId?: number | string;
   topicName: string;
   authorUsername: string;
   comments: PostComment[];

@@ -189,15 +189,19 @@ export class PostFormComponent {
           topicsState.status === 'success' &&
           !this.formInitialized()
         ) {
-          const matchedTopic = this.matchTopicByName(
-            topicsState.data,
-            state.data.topicName
-          );
+          const topicIdFromPost = state.data.topicId;
+          const targetTopicId =
+            topicIdFromPost !== undefined && topicIdFromPost !== null
+              ? String(topicIdFromPost)
+              : String(
+                  this.matchTopicByName(topicsState.data, state.data.topicName)
+                    ?.id ?? ''
+                );
 
           this.postForm.patchValue({
             title: state.data.title,
             content: state.data.content,
-            topicId: matchedTopic ? String(matchedTopic.id) : '',
+            topicId: targetTopicId,
           });
           this.formInitialized.set(true);
         }
@@ -324,11 +328,22 @@ export class PostFormComponent {
     return "Une erreur inattendue s'est produite.";
   }
 
-  private matchTopicByName(topics: Topic[], name: string | null): Topic | null {
+  private matchTopicByName(
+    topics: Topic[],
+    name: string | null
+  ): Topic | null {
     if (!name) {
       return null;
     }
 
-    return topics.find((topic) => topic.name === name) ?? null;
+    const target = name.trim().toLowerCase();
+
+    // Certains endpoints renvoient topicName correspondant au "description" (ex: "AI").
+    // On tente d'abord sur name, puis sur description.
+    return (
+      topics.find((t) => t.name?.trim().toLowerCase() === target) ??
+      topics.find((t) => t.description?.trim().toLowerCase() === target) ??
+      null
+    );
   }
 }

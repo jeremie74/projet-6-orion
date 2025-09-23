@@ -62,6 +62,11 @@ export class Header implements OnInit, OnDestroy {
     this.router.navigate(['/posts']);
   }
 
+  goToTopics() {
+    this.closeMenu();
+    this.router.navigate(['/posts/topics']);
+  }
+
   logout() {
     clearSession();
     this.session.set(readSession());

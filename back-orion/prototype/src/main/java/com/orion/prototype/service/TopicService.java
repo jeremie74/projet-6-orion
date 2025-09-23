@@ -25,6 +25,6 @@ public class TopicService {
     }
 
     private TopicDto toDto(Topic topic) {
-        return new TopicDto(topic.getId(), topic.getName());
+        return new TopicDto(topic.getId(), topic.getDescription(), topic.getName());
     }
 }

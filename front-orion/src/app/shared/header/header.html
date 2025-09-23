@@ -17,7 +17,8 @@
       <a class="hover:underline" (click)="goToLogin()">Se connecter</a>
       <a class="hover:underline" (click)="goToRegister()">S'inscrire</a>
       } @else {
-      <a class="hover:underline" (click)="goToArticles()">Mes articles</a>
+      <a class="hover:underline" (click)="goToArticles()">Mes Articles</a>
+      <a class="hover:underline" (click)="goToTopics()">Thèmes</a>
       <button type="button" class="hover:underline" (click)="logout()">
         Se déconnecter
       </button>
@@ -93,7 +94,14 @@
       class="text-left hover:underline"
       (click)="goToArticles()"
     >
-      Mes Articles
+      Articles
+    </button>
+    <button
+      type="button"
+      class="text-left hover:underline"
+      (click)="goToTopics()"
+    >
+      Thèmes
     </button>
     <button type="button" class="text-left hover:underline" (click)="logout()">
       Se déconnecter
