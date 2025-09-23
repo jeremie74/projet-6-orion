@@ -113,15 +113,19 @@
           </button>
         </div>
         @if (isConfirming(post.id)) {
-        <div class="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-          <p class="font-medium">Êtes-vous sûr de vouloir supprimer cet article&nbsp;?</p>
+        <div
+          class="rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700"
+        >
+          <p class="font-medium">
+            Êtes-vous sûr de vouloir supprimer cet article&nbsp;?
+          </p>
           @if (deleteError()) {
           <p class="mt-2 text-xs text-red-500">{{ deleteError() }}</p>
           }
           <div class="mt-4 flex flex-wrap items-center gap-3">
             <button
               type="button"
-              class="inline-flex items-center justify-center rounded-lg bg-red-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-60"
+              class="cursor-pointer inline-flex items-center justify-center rounded-lg bg-red-500 px-4 py-2 text-sm font-semibold text-white transition hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-60"
               (click)="confirmDelete(post.id)"
               [disabled]="isDeleting(post.id)"
             >
@@ -129,7 +133,7 @@
             </button>
             <button
               type="button"
-              class="inline-flex items-center justify-center rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-100"
+              class="cursor-pointer inline-flex items-center justify-center rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-100"
               (click)="cancelDelete()"
               [disabled]="isDeleting(post.id)"
             >
