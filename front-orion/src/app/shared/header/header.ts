@@ -74,6 +74,11 @@ export class Header implements OnInit, OnDestroy {
     this.router.navigate(['/']);
   }
 
+  goToAccount() {
+    this.closeMenu();
+    this.router.navigate(['/account']);
+  }
+
   protected toggleMenu(): void {
     this.menuOpen.update((open) => !open);
   }

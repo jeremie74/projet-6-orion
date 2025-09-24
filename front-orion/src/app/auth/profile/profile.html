@@ -1,0 +1,163 @@
+<app-header></app-header>
+
+<main class="px-6 py-10">
+  <div class="mx-auto w-full max-w-3xl">
+    <section class="mb-6">
+      <h1 class="text-2xl font-semibold text-gray-900">Profil utilisateur</h1>
+    </section>
+
+    @if (successMessage()) {
+    <div
+      class="relative mt-4 mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700"
+    >
+      <button
+        type="button"
+        class="absolute right-2 top-2 inline-flex h-7 w-7 items-center justify-center rounded-full text-green-700 hover:bg-green-100"
+        aria-label="Fermer le message"
+        (click)="dismissSuccess()"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          class="h-4 w-4"
+          successMessage
+        >
+          <path d="M6 6l12 12M6 18L18 6" />
+        </svg>
+      </button>
+      {{ successMessage() }}
+    </div>
+    } @if (isLoading()) {
+    <div
+      class="rounded-lg border border-gray-200 bg-white px-4 py-6 text-sm text-gray-700"
+    >
+      Chargement du profil...
+    </div>
+    } @else if (hasError()) {
+    <div
+      class="rounded-lg border border-red-200 bg-red-50 px-4 py-6 text-sm text-red-700"
+    >
+      {{ errorMessage() ?? "Impossible de charger le profil." }}
+    </div>
+    } @else {
+    <form
+      class="space-y-6 rounded-xl border border-gray-200 bg-white p-8 shadow-sm"
+      [formGroup]="form"
+      (ngSubmit)="submit()"
+      novalidate
+    >
+      <div class="flex flex-col gap-2">
+        <label for="username" class="text-sm font-medium text-gray-700"
+          >Nom d'utilisateur</label
+        >
+        <input
+          id="username"
+          type="text"
+          formControlName="username"
+          class="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 transition focus:border-[#7763C5] focus:outline-none focus:ring-2 focus:ring-[#7763C5]/40"
+          [class.border-red-400]="
+            form.controls.username.invalid &&
+            (form.controls.username.touched || form.controls.username.dirty)
+          "
+          placeholder="Nom d'utilisateur"
+        />
+        @if (form.controls.username.invalid && (form.controls.username.touched || form.controls.username.dirty)) {
+        <p class="text-xs text-red-600">Le nom d'utilisateur est requis.</p>
+        }
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="email" class="text-sm font-medium text-gray-700"
+          >Email</label
+        >
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          class="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 transition focus:border-[#7763C5] focus:outline-none focus:ring-2 focus:ring-[#7763C5]/40"
+          placeholder="email@exemple.com"
+        />
+        @if (form.controls.email.invalid && (form.controls.email.touched ||
+        form.controls.email.dirty)) {
+        <p class="text-xs text-red-600">Email invalide.</p>
+        }
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label for="password" class="text-sm font-medium text-gray-700"
+          >Mot de passe actuel (obligatoire)</label
+        >
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          class="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 transition focus:border-[#7763C5] focus:outline-none focus:ring-2 focus:ring-[#7763C5]/40"
+          placeholder="Mot de passe actuel"
+        />
+        @if (form.controls.password.invalid && (form.controls.password.touched
+        || form.controls.password.dirty)) {
+        <p class="text-xs text-red-600">
+          Le mot de passe est requis pour valider les changements.
+        </p>
+        }
+      </div>
+
+      <div class="space-y-2">
+        <button
+          type="button"
+          class="text-sm text-[#7763C5] hover:underline"
+          (click)="toggleChangePassword()"
+        >
+          {{
+            showNewPassword()
+              ? "Annuler le changement de mot de passe"
+              : "Changer le mot de passe"
+          }}
+        </button>
+
+        @if (showNewPassword()) {
+        <div class="flex flex-col gap-2">
+          <label for="newPassword" class="text-sm font-medium text-gray-700"
+            >Nouveau mot de passe</label
+          >
+          <input
+            id="newPassword"
+            type="password"
+            formControlName="newPassword"
+            class="rounded-lg border border-gray-300 px-4 py-2 text-sm text-gray-900 transition focus:border-[#7763C5] focus:outline-none focus:ring-2 focus:ring-[#7763C5]/40"
+            placeholder="Saisir un nouveau mot de passe"
+          />
+          @if (form.controls.newPassword.invalid &&
+          (form.controls.newPassword.touched ||
+          form.controls.newPassword.dirty)) {
+          <p class="text-xs text-red-600">6 caractères minimum.</p>
+          }
+        </div>
+        }
+      </div>
+
+      @if (actionError()) {
+      <div
+        class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
+      >
+        {{ actionError() }}
+      </div>
+      }
+
+      <div class="flex flex-wrap items-center gap-3">
+        <button
+          type="submit"
+          class="cursor-pointer inline-flex h-11 items-center justify-center rounded-lg bg-[#7763C5] px-6 text-sm font-semibold text-white transition-colors hover:bg-[#5c4ca3] disabled:cursor-not-allowed disabled:opacity-60"
+          [disabled]="!canSubmit() || isSubmitting()"
+        >
+          Valider
+        </button>
+      </div>
+    </form>
+
+    }
+  </div>
+</main>

@@ -5,7 +5,7 @@
 }
 
 button {
-  @apply h-[40px] leading-none;
+  @apply leading-none;
 }
 
 a {

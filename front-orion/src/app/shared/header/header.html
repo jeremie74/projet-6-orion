@@ -25,6 +25,7 @@
       <a
         class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-200"
         aria-label="Espace compte utilisateur"
+        (click)="goToAccount()"
       >
         <img [src]="avatarSrc" alt="Avatar utilisateur" class="h-8 w-8" />
       </a>
@@ -107,7 +108,7 @@
       Se déconnecter
     </button>
     <div class="flex items-center space-x-3 pt-2">
-      <button type="button" class="text-left hover:underline">
+      <button type="button" class="text-left hover:underline" (click)="goToAccount()">
         Mon compte
       </button>
     </div>

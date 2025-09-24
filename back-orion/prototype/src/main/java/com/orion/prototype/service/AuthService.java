@@ -12,6 +12,8 @@ import com.orion.prototype.dto.LoginRequest;
 import com.orion.prototype.dto.LoginResponse;
 import com.orion.prototype.dto.RegisterRequest;
 import com.orion.prototype.dto.UserDto;
+import com.orion.prototype.dto.UpdateProfileRequest;
+import com.orion.prototype.dto.UpdateProfileResponse;
 import com.orion.prototype.entity.User;
 import com.orion.prototype.repository.UserRepository;
 import com.orion.prototype.security.JwtService;
@@ -103,5 +105,62 @@ public class AuthService {
     // Conversion User → UserDto
     private UserDto toDto(User user) {
         return new UserDto(user.getId(), user.getUsername(), user.getEmail());
+    }
+
+    public UpdateProfileResponse updateProfile(Authentication authentication, UpdateProfileRequest request) {
+        String emailPrincipal = (String) authentication.getPrincipal();
+
+        User user = userRepository.findByEmail(emailPrincipal)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Utilisateur introuvable"));
+
+        // Always require current password
+        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Mot de passe actuel incorrect");
+        }
+
+        boolean passwordChanged = false;
+        boolean emailChanged = false;
+
+        // Update username if provided and different
+        if (request.username() != null && !request.username().isBlank()
+                && !request.username().equals(user.getUsername())) {
+            userRepository.findByUsername(request.username()).ifPresent(existing -> {
+                if (!existing.getId().equals(user.getId())) {
+                    throw new ResponseStatusException(HttpStatus.CONFLICT, "Nom d'utilisateur déjà pris");
+                }
+            });
+            user.setUsername(request.username());
+        }
+
+        // Update email if provided and different
+        if (request.email() != null && !request.email().isBlank()
+                && !request.email().equals(user.getEmail())) {
+            userRepository.findByEmail(request.email()).ifPresent(existing -> {
+                if (!existing.getId().equals(user.getId())) {
+                    throw new ResponseStatusException(HttpStatus.CONFLICT, "Email déjà utilisé");
+                }
+            });
+            user.setEmail(request.email());
+            emailChanged = true;
+        }
+
+        // Change password if newPassword provided
+        if (request.newPassword() != null && !request.newPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(request.newPassword()));
+            passwordChanged = true;
+        }
+
+        // Persist updates
+        userRepository.save(user);
+
+        // Return new tokens if password or email changed
+        if (passwordChanged || emailChanged) {
+            String accessToken = jwtService.generateToken(user.getEmail());
+            var refreshToken = refreshTokenService.createForUser(user);
+            return new UpdateProfileResponse(toDto(user), accessToken, refreshToken.getToken());
+        }
+
+        // No token rotation
+        return new UpdateProfileResponse(toDto(user), null, null);
     }
 }

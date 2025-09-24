@@ -4,6 +4,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -14,6 +15,8 @@ import com.orion.prototype.dto.LoginResponse;
 import com.orion.prototype.dto.RefreshTokenRequest;
 import com.orion.prototype.dto.RegisterRequest;
 import com.orion.prototype.dto.UserDto;
+import com.orion.prototype.dto.UpdateProfileRequest;
+import com.orion.prototype.dto.UpdateProfileResponse;
 import com.orion.prototype.entity.User;
 import com.orion.prototype.repository.UserRepository;
 import com.orion.prototype.service.AuthService;
@@ -61,5 +64,10 @@ public class AuthController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void logout(Authentication authentication) {
         authService.logout(authentication);
+    }
+
+    @PatchMapping("/me")
+    public UpdateProfileResponse updateMe(Authentication authentication, @Valid @RequestBody UpdateProfileRequest request) {
+        return authService.updateProfile(authentication, request);
     }
 }
