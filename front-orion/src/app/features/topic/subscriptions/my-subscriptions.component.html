@@ -1,0 +1,45 @@
+@if (actionError()) {
+<div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+  {{ actionError() }}
+</div>
+} @if (isLoading()) {
+<div class="rounded-lg border border-gray-200 bg-white px-4 py-6 text-sm text-gray-700">
+  Chargement des abonnements...
+</div>
+} @else if (hasError()) {
+<div class="rounded-lg border border-red-200 bg-red-50 px-4 py-6 text-sm text-red-700">
+  {{ errorMessage() ?? 'Une erreur inattendue est survenue.' }}
+</div>
+} @else if (topics().length === 0) {
+<div class="rounded-lg border border-dashed border-gray-300 bg-gray-50 px-6 py-10 text-center text-sm text-gray-500">
+  Aucun abonnement pour le moment.
+</div>
+} @else {
+<div class="grid gap-6 sm:grid-cols-2">
+  @for (topic of topics(); track topic.id) {
+  <article class="flex h-full flex-col gap-4 rounded-xl border border-gray-200 bg-[#F5F5F5] p-6 shadow-sm">
+    <h3 class="text-lg font-semibold text-gray-900">
+      <a
+        [routerLink]="['/posts/topics', topic.id]"
+        [state]="{ topicName: topic.name }"
+        class="hover:underline focus:underline focus:outline-none"
+      >
+        {{ topic.name }}
+      </a>
+    </h3>
+    <p class="text-sm text-gray-600">{{ topic.description }}</p>
+
+    <div class="pt-2">
+      <button
+        type="button"
+        class="cursor-pointer h-11 items-center justify-center rounded-lg px-6 text-sm font-semibold text-white transition-colors disabled:cursor-not-allowed disabled:opacity-60 bg-[#7763C5] hover:bg-[#5c4ca3]"
+        (click)="toggleSubscription(topic.id)"
+        [disabled]="isProcessing(topic.id)"
+      >
+        Se désabonner
+      </button>
+    </div>
+  </article>
+  }
+  </div>
+}

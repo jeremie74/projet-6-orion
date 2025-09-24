@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Header } from '../../shared/header/header';
+import { MySubscriptionsComponent } from '../../features/topic/subscriptions/my-subscriptions.component';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { of } from 'rxjs';
 import { catchError, map, startWith } from 'rxjs/operators';
@@ -13,7 +14,7 @@ type AsyncState<T> = { status: 'idle' | 'loading' | 'success' | 'error'; data: T
 
 @Component({
   selector: 'app-profile',
-  imports: [CommonModule, ReactiveFormsModule, Header],
+  imports: [CommonModule, ReactiveFormsModule, Header, MySubscriptionsComponent],
   templateUrl: './profile.html',
 })
 export class ProfileComponent {
