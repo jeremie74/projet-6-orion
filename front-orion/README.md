@@ -1,59 +1,67 @@
 # FrontOrion
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.1.1.
+Projet Angular généré avec [Angular CLI](https://github.com/angular/angular-cli) version 20.1.1.
 
-## Development server
+## Installation
 
-To start a local development server, run:
+Après avoir cloné le dépôt en local, installez les dépendances :
+
+```bash
+npm install
+```
+
+## Serveur de développement
+
+Lancez le serveur local :
 
 ```bash
 ng serve
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+Ouvrez ensuite `http://localhost:4200/` dans votre navigateur. L’application se recharge automatiquement à chaque modification des fichiers source.
 
-## Code scaffolding
+## Génération de code
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Pour générer un nouveau composant :
 
 ```bash
 ng generate component component-name
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+Liste des schémas disponibles (components, directives, pipes, etc.) :
 
 ```bash
 ng generate --help
 ```
 
-## Building
+## Construction (build)
 
-To build the project run:
+Construire le projet :
 
 ```bash
 ng build
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Les artefacts sont générés dans le dossier `dist/`. Le build de production optimise automatiquement l’application.
 
-## Running unit tests
+## Tests unitaires
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+Exécuter les tests unitaires avec [Karma](https://karma-runner.github.io) :
 
 ```bash
 ng test
 ```
 
-## Running end-to-end tests
+## Tests end‑to‑end
 
-For end-to-end (e2e) testing, run:
+Lancer les tests E2E :
 
 ```bash
 ng e2e
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+Angular CLI n’intègre pas de framework E2E par défaut ; choisissez celui qui convient le mieux à votre projet.
 
-## Additional Resources
+## Ressources
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Documentation et référence de l’Angular CLI : [Angular CLI – Overview & Command Reference](https://angular.dev/tools/cli).
