@@ -1,4 +1,4 @@
-# projet-6-orion
+# projet 6 -> ORION
 
 Open Class Rooms Projet 6 Fullstack app
 
