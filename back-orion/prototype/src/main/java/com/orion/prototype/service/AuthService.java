@@ -1,6 +1,7 @@
 package com.orion.prototype.service;
 
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -26,6 +27,9 @@ public class AuthService {
     private final JwtService jwtService;
     private final RefreshTokenService refreshTokenService;
 
+    private static final Pattern STRONG_PASSWORD_PATTERN = Pattern.compile(
+            "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).+$");
+
     public AuthService(UserRepository userRepository,
             PasswordEncoder passwordEncoder,
             JwtService jwtService,
@@ -40,6 +44,9 @@ public class AuthService {
         if (userRepository.findByEmail(request.email()).isPresent()) {
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Cet utilisateur existe déjà");
         }
+
+        // Validate password strength (digit, lowercase, uppercase, special char)
+        validatePasswordStrength(request.password());
 
         User user = User.builder()
                 .username(request.username())
@@ -146,6 +153,7 @@ public class AuthService {
 
         // Change password if newPassword provided
         if (request.newPassword() != null && !request.newPassword().isBlank()) {
+            validatePasswordStrength(request.newPassword());
             user.setPassword(passwordEncoder.encode(request.newPassword()));
             passwordChanged = true;
         }
@@ -162,5 +170,13 @@ public class AuthService {
 
         // No token rotation
         return new UpdateProfileResponse(toDto(user), null, null);
+    }
+
+    private void validatePasswordStrength(String password) {
+        if (password == null || password.isBlank() || !STRONG_PASSWORD_PATTERN.matcher(password).matches()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Le mot de passe doit contenir au moins une lettre minuscule, une lettre majuscule, un chiffre et un caractère spécial.");
+        }
     }
 }
